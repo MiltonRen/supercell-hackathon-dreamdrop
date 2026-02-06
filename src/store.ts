@@ -28,6 +28,8 @@ interface GameState {
   // World State
   worldDescription: string;
   setWorldDescription: (desc: string) => void;
+  isDreaming: boolean;
+  setIsDreaming: (isDreaming: boolean) => void;
 
   // Players
   players: Record<string, Player>;
@@ -60,6 +62,8 @@ export const useStore = create<GameState>((set) => ({
       [id]: { id, position: [0, 1, 0], color, heldObjectId: null }
     }
   })),
+  isDreaming: false,
+  setIsDreaming: (isDreaming) => set({ isDreaming }),
   updatePlayerPosition: (id, position) => set((state) => {
     const player = state.players[id];
     if (!player) return {};

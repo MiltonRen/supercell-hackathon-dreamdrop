@@ -21,7 +21,7 @@ function GameObj({ obj }: { obj: GameObject }) {
   // To keep it simple, we use "Fixed" for static objects
 
   return (
-    <RigidBody type={obj.type === 'static' ? 'fixed' : 'dynamic'} position={position} colliders="hull">
+    <RigidBody type={obj.type === 'static' ? 'fixed' : 'dynamic'} position={position} colliders="hull" userData={{ id: obj.id }}>
       <mesh castShadow receiveShadow position={[0, meshYOffset, 0]}>
         {Geometry}
         <meshStandardMaterial color={color} />
@@ -43,6 +43,21 @@ export function World() {
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]} receiveShadow>
           <planeGeometry args={[50, 50]} />
           <meshStandardMaterial color="#5C4033" />
+        </mesh>
+      </RigidBody>
+
+      <RigidBody type="fixed" colliders="cuboid">
+        <mesh position={[0, 5, -25.5]} visible={false}>
+          <boxGeometry args={[51, 10, 1]} />
+        </mesh>
+        <mesh position={[0, 5, 25.5]} visible={false}>
+          <boxGeometry args={[51, 10, 1]} />
+        </mesh>
+        <mesh position={[-25.5, 5, 0]} visible={false}>
+          <boxGeometry args={[1, 10, 51]} />
+        </mesh>
+        <mesh position={[25.5, 5, 0]} visible={false}>
+          <boxGeometry args={[1, 10, 51]} />
         </mesh>
       </RigidBody>
 

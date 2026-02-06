@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { RigidBody, RapierRigidBody } from '@react-three/rapier';
+import { RigidBody, RapierRigidBody, useRapier } from '@react-three/rapier';
 import { useStore, Player as PlayerType, GameObject } from '../store';
 
 import * as THREE from 'three';
@@ -32,6 +32,7 @@ function Player({ player, isControlled }: { player: PlayerType, isControlled: bo
   const pickupObject = useStore(state => state.pickupObject);
   const dropObject = useStore(state => state.dropObject);
   const objects = useStore(state => state.objects);
+  const { world } = useRapier();
 
   // Movement Logic
   const keys = useRef<{ [key: string]: boolean }>({});
@@ -93,28 +94,25 @@ function Player({ player, isControlled }: { player: PlayerType, isControlled: bo
       let closestDist = Infinity;
       let closestId = null;
 
-      objects.forEach(obj => {
-        // Ignore already held objects (store logic should prevent this, but check here too)
-        // Actually store holds global list. World filters. 
-        // We need to check if ANY player holds it?
-        // Store doesn't flag "isHeld" on object. We have to deduce.
-        // We can do a quick check? For now assuming if it's in `objects` and not held by ME it's pickable?
-        // Wait, World filters objects held by ANYONE. So if I can see it, I can scan it from `objects` list?
-        // No, `objects` list in store has ALL objects.
-        // I should filter out objects held by others.
-        // But `objects` in store doesn't link to player. 
-        // `players` in store link to object.
-        // Expensive check?
-        // Optimization: Skip checking "isHeld" for now, store logic can handle or race condition ok for POC.
+      // Iterate via Physics World to get ACTUAL positions (not potentially stale store positions)
+      world.forEachRigidBody((body) => {
+        // Skip self
+        if (body.handle === rigidBodyRef.current?.handle) return;
 
-        const dx = obj.position[0] - playerPos.x;
-        const dy = obj.position[1] - playerPos.y;
-        const dz = obj.position[2] - playerPos.z;
+        // check userData for ID
+        const userData = body.userData as { id?: string };
+        if (!userData || !userData.id) return;
+
+        const pos = body.translation();
+        const dx = pos.x - playerPos.x;
+        const dy = pos.y - playerPos.y;
+        const dz = pos.z - playerPos.z;
         const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
-        if (dist < 2.5 && dist < closestDist) {
+        // Increased range from 2.5 to 5.0 to handle larger objects and LLM objects that might be slightly offset
+        if (dist < 5.0 && dist < closestDist) {
           closestDist = dist;
-          closestId = obj.id;
+          closestId = userData.id;
         }
       });
 
@@ -130,6 +128,13 @@ function Player({ player, isControlled }: { player: PlayerType, isControlled: bo
     if (!rigidBodyRef.current) return;
 
     const pos = rigidBodyRef.current.translation();
+
+    // Safety check: if player falls off map, reset position
+    if (pos.y < -10) {
+      rigidBodyRef.current.setTranslation({ x: 0, y: 5, z: 0 }, true);
+      rigidBodyRef.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
+    }
+
     updatePlayerPosition(player.id, [pos.x, pos.y, pos.z]);
 
     let moveDirection = new THREE.Vector3(0, 0, 0);

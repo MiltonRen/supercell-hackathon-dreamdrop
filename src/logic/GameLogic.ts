@@ -34,6 +34,8 @@ export function useGameLogic() {
 
     // Rule 1: "world" -> Update World Description
     if (lower.includes("world")) {
+      const setIsDreaming = useStore.getState().setIsDreaming;
+      setIsDreaming(true);
       try {
         const prompt = `
 Current World Description: "${worldDescription}"
@@ -55,6 +57,9 @@ New World Description:
 
       } catch (e) {
         console.error("Gemini World Update Failed", e);
+      } finally {
+        const setIsDreaming = useStore.getState().setIsDreaming;
+        setIsDreaming(false);
       }
     }
 
