@@ -1,7 +1,15 @@
-# To run the project
+# Hi there! Welcome to DreamDrop!
+
+This project is inspired by the real-time rendering demos made on top of Decart AI:
+https://x.com/voxvienne/status/1975624204105228503
+https://x.com/willemhelmet/status/2019133578102337946
+
+With this kind of power, we are able to create dynamic and interactive experiences that respond to player input in real-time. Let's dive in.
+
+## To run the project
 npm run dev
 
-# React + Vite
+## React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
@@ -17,8 +25,3 @@ The React Compiler is currently not compatible with SWC. See [this issue](https:
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-
-## Decart fun
-https://x.com/voxvienne/status/1975624204105228503
-https://x.com/willemhelmet/status/2019133578102337946
-# supercell-hackathon-dreamdrop

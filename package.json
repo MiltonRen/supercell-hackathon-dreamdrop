@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@decartai/sdk": "^0.0.41",
+    "@google/genai": "^1.40.0",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
     "@react-three/rapier": "^2.2.0",
