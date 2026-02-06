@@ -4,7 +4,6 @@ import { RigidBody, RapierRigidBody } from '@react-three/rapier';
 import { useStore, Player as PlayerType, GameObject } from '../store';
 
 import * as THREE from 'three';
-import { Text, Billboard } from '@react-three/drei';
 
 function HeldObject({ objectId }: { objectId: string }) {
   const objects = useStore(state => state.objects);
@@ -137,16 +136,25 @@ function Player({ player, isControlled }: { player: PlayerType, isControlled: bo
 
     if (isControlled) {
       // Arrow Keys
-      let moveX = 0;
-      let moveZ = 0;
+      // Arrow Keys
       const speed = 5;
+      const direction = new THREE.Vector3(0, 0, 0);
 
-      if (keys.current['arrowup']) moveZ -= 1;
-      if (keys.current['arrowdown']) moveZ += 1;
-      if (keys.current['arrowleft']) moveX -= 1;
-      if (keys.current['arrowright']) moveX += 1;
+      // Get camera facing direction (projected to ground plane)
+      const front = new THREE.Vector3();
+      state.camera.getWorldDirection(front);
+      front.y = 0;
+      front.normalize();
 
-      const direction = new THREE.Vector3(moveX, 0, moveZ);
+      // Get camera right direction
+      const right = new THREE.Vector3();
+      right.crossVectors(front, new THREE.Vector3(0, 1, 0)).normalize();
+
+      if (keys.current['arrowup']) direction.add(front);
+      if (keys.current['arrowdown']) direction.sub(front);
+      if (keys.current['arrowleft']) direction.sub(right);
+      if (keys.current['arrowright']) direction.add(right);
+
       if (direction.length() > 0) direction.normalize().multiplyScalar(speed);
       moveDirection.copy(direction);
 
@@ -204,16 +212,7 @@ function Player({ player, isControlled }: { player: PlayerType, isControlled: bo
       </RigidBody>
 
       {/* Name Tag */}
-      <Billboard
-        position={[player.position[0], player.position[1] + 2.5, player.position[2]]}
-      >
-        <Text
-          fontSize={0.4}
-          color={isControlled ? "yellow" : "white"}
-        >
-          {isControlled ? "[You]" : player.id}
-        </Text>
-      </Billboard>
+      {/* Name Tag Removed */}
     </group>
   );
 }

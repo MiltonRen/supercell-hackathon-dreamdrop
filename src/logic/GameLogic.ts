@@ -66,7 +66,6 @@ Player "${playerId}" says: "${text}"
 Goal: Extract the object the player wants to make.
 Return a JSON object with:
 {
-  "label": string (short name),
   "color": string (hex code),
   "shape": "box" | "sphere" | "cylinder"
 }
@@ -92,7 +91,6 @@ Only return JSON.
             id: uuidv4(),
             position: [Math.random() * 10 - 5, 5, Math.random() * 10 - 5],
             type: 'dynamic',
-            label: data.label || 'Unknown',
             color: data.color || 'white',
             shape: data.shape || 'box',
             scale: [1, 1, 1]

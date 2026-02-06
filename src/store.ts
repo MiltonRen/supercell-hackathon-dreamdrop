@@ -12,7 +12,6 @@ export type GameObject = {
   id: string;
   position: [number, number, number];
   type: 'static' | 'dynamic';
-  label: string;
   color: string;
   shape: 'box' | 'sphere' | 'cylinder';
   scale?: [number, number, number];
@@ -106,10 +105,10 @@ export const useStore = create<GameState>((set) => ({
   }),
 
   objects: [
-    { id: 'barn', position: [-5, 2, -5], type: 'static', label: 'Big Barn', color: '#8B4513', shape: 'box', scale: [4, 4, 4] },
-    { id: 'tree1', position: [5, 2, -3], type: 'static', label: 'Oak Tree', color: '#228B22', shape: 'cylinder', scale: [2, 4, 2] },
-    { id: 'well', position: [2, 1, 4], type: 'static', label: 'Old Well', color: '#808080', shape: 'cylinder', scale: [2, 2, 2] },
-    { id: 'crate1', position: [2, 0.5, 0], type: 'static', label: 'Small Crate', color: '#CD853F', shape: 'box', scale: [1, 1, 1] },
+    { id: 'barn', position: [-20, 0, -20], type: 'static', label: 'Big Barn', color: '#8B4513', shape: 'box', scale: [4, 4, 4] },
+    { id: 'tree1', position: [20, 0, -15], type: 'static', label: 'Oak Tree', color: '#228B22', shape: 'cylinder', scale: [2, 4, 2] },
+    { id: 'well', position: [15, 0, 20], type: 'static', label: 'Old Well', color: '#808080', shape: 'cylinder', scale: [2, 2, 2] },
+    { id: 'crate1', position: [-2, 0, 2], type: 'static', label: 'Small Crate', color: '#CD853F', shape: 'box', scale: [1, 1, 1] },
   ],
   addObject: (obj) => set((state) => ({ objects: [...state.objects, obj] })),
   removeObject: (id) => set((state) => ({ objects: state.objects.filter(o => o.id !== id) })),

@@ -5,7 +5,6 @@ import { Players } from './Player'; // We will create a component that maps play
 import { Stats, OrbitControls } from '@react-three/drei';
 import { useStore } from '../store';
 import { useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 
 export function Scene() {
   const addPlayer = useStore(state => state.addPlayer);
@@ -15,15 +14,15 @@ export function Scene() {
   useEffect(() => {
     // Initialize default players if none exist
     if (Object.keys(players).length === 0) {
-      addPlayer("player1", "hotpink");
-      addPlayer("player2", "cyan");
+      addPlayer("player1", "white");
+      addPlayer("player2", "white");
       setCurrentPlayer("player1");
     }
   }, []);
 
   return (
     <div style={{ width: '100%', height: '100%' }}>
-      <Canvas shadows camera={{ position: [0, 10, 10], fov: 50 }}>
+      <Canvas shadows camera={{ position: [50, 50, 25], fov: 50 }}>
         <color attach="background" args={['#87CEEB']} />
 
         <ambientLight intensity={0.5} />

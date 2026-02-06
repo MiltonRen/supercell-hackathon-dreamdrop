@@ -4,10 +4,17 @@ import { RigidBody } from '@react-three/rapier';
 function GameObj({ obj }: { obj: GameObject }) {
   const { position, color, shape, scale } = obj;
 
+  const width = scale?.[0] || 1;
+  const height = scale?.[1] || 1;
+
+  // Calculate local offset to sit on ground (pivot at bottom)
+  let meshYOffset = height / 2;
+  if (shape === 'sphere') meshYOffset = width; // Radius
+
   // Basic geometry mapping
   let Geometry = <boxGeometry args={scale || [1, 1, 1]} />;
-  if (shape === 'cylinder') Geometry = <cylinderGeometry args={[scale?.[0] || 1, scale?.[0] || 1, scale?.[1] || 1]} />;
-  if (shape === 'sphere') Geometry = <sphereGeometry args={[scale?.[0] || 1]} />;
+  if (shape === 'cylinder') Geometry = <cylinderGeometry args={[width, width, height]} />;
+  if (shape === 'sphere') Geometry = <sphereGeometry args={[width]} />;
 
   // Collision shape mapping for Rapier (RigidBody handles auto-shape usually, but precise colliders can be added if needed)
   // For now, allow auto hull generation or basic primities by RigidBody type
@@ -15,35 +22,11 @@ function GameObj({ obj }: { obj: GameObject }) {
 
   return (
     <RigidBody type={obj.type === 'static' ? 'fixed' : 'dynamic'} position={position} colliders="hull">
-      <mesh castShadow receiveShadow>
+      <mesh castShadow receiveShadow position={[0, meshYOffset, 0]}>
         {Geometry}
         <meshStandardMaterial color={color} />
       </mesh>
-      {/* Simple Text Label */}
-      <group position={[0, (scale?.[1] || 1) / 2 + 1, 0]}>
-        {/* Text rendering in R3F needs 'Text' from drei, let's import it */}
-      </group>
     </RigidBody>
-  );
-}
-
-import { Text, Billboard } from '@react-three/drei';
-
-function ObjectLabel({ obj }: { obj: GameObject }) {
-  const yOffset = (obj.scale?.[1] || 1) / 2 + 0.5;
-  return (
-    <Billboard
-      position={[obj.position[0], obj.position[1] + yOffset, obj.position[2]]}
-    >
-      <Text
-        fontSize={0.5}
-        color="white"
-        anchorX="center"
-        anchorY="middle"
-      >
-        {obj.label}
-      </Text>
-    </Billboard>
   );
 }
 
@@ -58,7 +41,7 @@ export function World() {
       {/* Ground */}
       <RigidBody type="fixed" colliders="cuboid">
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]} receiveShadow>
-          <planeGeometry args={[100, 100]} />
+          <planeGeometry args={[50, 50]} />
           <meshStandardMaterial color="#5C4033" />
         </mesh>
       </RigidBody>
@@ -67,7 +50,6 @@ export function World() {
       {objects.filter(obj => !heldObjectIds.has(obj.id)).map(obj => (
         <group key={obj.id}>
           <GameObj obj={obj} />
-          <ObjectLabel obj={obj} />
         </group>
       ))}
     </group>
