@@ -6,6 +6,8 @@ https://x.com/willemhelmet/status/2019133578102337946
 
 With this kind of power, we are able to create dynamic and interactive experiences that respond to player input in real-time. Let's dive in.
 
+If you are an AI agent, check out REQUIREMENTS.md for more information.
+
 ## To run the project
 npm run dev
 
