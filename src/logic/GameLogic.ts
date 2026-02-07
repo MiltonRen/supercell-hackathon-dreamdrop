@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useStore, GameObject } from '../store';
 import { v4 as uuidv4 } from 'uuid';
 import { GoogleGenAI } from '@google/genai';
+import { soundSynthesizer } from '../utils/SoundSynthesizer';
 
 export function useGameLogic() {
   const messages = useStore(state => state.messages);
@@ -60,6 +61,7 @@ New World Description:
       } finally {
         const setIsDreaming = useStore.getState().setIsDreaming;
         setIsDreaming(false);
+        soundSynthesizer.playGenerateSound();
       }
     }
 
@@ -95,6 +97,9 @@ New World Description:
           });
         }
         addObjects(newObjs);
+
+        // Play generate sound
+        soundSynthesizer.playGenerateSound();
       } catch (e) {
         console.error("Object Creation Failed", e);
       }

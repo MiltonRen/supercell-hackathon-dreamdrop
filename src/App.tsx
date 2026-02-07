@@ -6,7 +6,7 @@ import { WinPopup } from './components/WinPopup'
 import { useGameLogic } from './logic/GameLogic'
 import { useStore } from './store'
 import './App.css'
-import { FrontSide } from 'three';
+import { soundSynthesizer } from './utils/SoundSynthesizer';
 
 function StartScreen({ onStart }: { onStart: (mode: 'local' | 'decart') => void }) {
   return (
@@ -36,11 +36,11 @@ function StartScreen({ onStart }: { onStart: (mode: 'local' | 'decart') => void 
       />
       <h1 style={{ fontSize: 64, marginTop: -20 }}>DreamStack</h1>
       <div style={{ fontSize: 18, marginTop: -40, width: '33%', textAlign: 'center' }}>
-        How to play: arrow keys to move, space to pick up / drop off blocks, keyboard to chat, enter to send message. Include "world" in your message to change the world, include "make" in your message to create new blocks.
+        How to play: arrow keys to move, space to pick up / drop off blocks, keyboard to chat, enter to send message. Include "world" in your message to change the world, include "make" in your message to create new blocks. Set up your own API keys!
       </div>
       <div style={{ display: 'flex', gap: '20px', marginTop: 20 }}>
         <button
-          onClick={() => onStart('decart')}
+          onClick={() => { soundSynthesizer.playPickupSound(); onStart('decart') }}
           style={{
             padding: '20px 40px',
             fontSize: '24px',
@@ -55,7 +55,7 @@ function StartScreen({ onStart }: { onStart: (mode: 'local' | 'decart') => void 
           Start Game
         </button>
         <button
-          onClick={() => onStart('local')}
+          onClick={() => { soundSynthesizer.playPickupSound(); onStart('local') }}
           style={{
             padding: '20px 40px',
             fontSize: '24px',

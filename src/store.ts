@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
+import { soundSynthesizer } from './utils/SoundSynthesizer';
 
 export type Player = {
   id: string;
@@ -85,6 +86,10 @@ export const useStore = create<GameState>((set) => ({
   pickupObject: (playerId, objectId) => set((state) => {
     const player = state.players[playerId];
     if (!player) return {};
+
+    // Play pickup sound
+    soundSynthesizer.playPickupSound();
+
     return {
       players: {
         ...state.players,
@@ -95,6 +100,9 @@ export const useStore = create<GameState>((set) => ({
   dropObject: (playerId, newPosition) => set((state) => {
     const player = state.players[playerId];
     if (!player || !player.heldObjectId) return {};
+
+    // Play drop sound
+    soundSynthesizer.playDropSound();
 
     // Update player (drop)
     const updatedPlayers = {

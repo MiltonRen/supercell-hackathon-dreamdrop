@@ -1,4 +1,5 @@
 import { useStore } from '../store';
+import { soundSynthesizer } from '../utils/SoundSynthesizer';
 
 interface WinPopupProps {
   onBackToHome: () => void;
@@ -8,6 +9,7 @@ export function WinPopup({ onBackToHome }: WinPopupProps) {
   const resetGame = useStore(state => state.resetGame);
 
   const handleBackToHome = () => {
+    soundSynthesizer.playPickupSound();
     resetGame();
     onBackToHome();
   };

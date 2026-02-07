@@ -79,7 +79,7 @@ export function Overlay() {
           />
           <div>
             <h3 style={{ margin: 0, marginTop: '6px', color: '#fff', fontSize: '1.2rem', fontWeight: 700, letterSpacing: '0.5px' }}>DreamStack</h3>
-            <small style={{ color: '#888' }}>Playing as: {currentPlayerId}</small>
+            <small style={{ color: '#888', fontWeight: 700 }}>Playing as {currentPlayerId}</small>
           </div>
         </div>
 
@@ -96,8 +96,8 @@ export function Overlay() {
           marginTop: '15px',
           padding: '10px',
           background: 'rgba(255,255,255,0.05)',
-          borderRadius: '6px',
-          border: '1px solid #444',
+          borderRadius: '10px',
+          border: '3px solid #555',
           fontSize: '0.9em',
           color: '#cae4ff',
           fontStyle: 'italic',
@@ -146,9 +146,11 @@ export function Overlay() {
         <input
           ref={inputRef}
           style={{
-            width: '90%',
+            width: '95%',
+            marginLeft: '-20px',
+            marginBottom: '20px',
             padding: '10px',
-            borderRadius: '4px',
+            borderRadius: '10px',
             border: '3px solid #555',
             background: '#111',
             color: 'white'
