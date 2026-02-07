@@ -11,13 +11,13 @@ function CharacterModel({ color, moveDirection }: { color: string, moveDirection
   const targetRotation = useRef(0);
 
   // Load OBJ model
-  const obj = useLoader(OBJLoader, '/src/assets/3d_model/base.obj');
+  const obj = useLoader(OBJLoader, '/src/assets/character_noeye/base.obj');
 
   // Load textures
-  const diffuseMap = useLoader(THREE.TextureLoader, '/src/assets/3d_model/texture_diffuse.png');
-  const normalMap = useLoader(THREE.TextureLoader, '/src/assets/3d_model/texture_normal.png');
-  const roughnessMap = useLoader(THREE.TextureLoader, '/src/assets/3d_model/texture_roughness.png');
-  const metalnessMap = useLoader(THREE.TextureLoader, '/src/assets/3d_model/texture_metallic.png');
+  const diffuseMap = useLoader(THREE.TextureLoader, '/src/assets/character_noeye/texture_diffuse.png');
+  const normalMap = useLoader(THREE.TextureLoader, '/src/assets/character_noeye/texture_normal.png');
+  const roughnessMap = useLoader(THREE.TextureLoader, '/src/assets/character_noeye/texture_roughness.png');
+  const metalnessMap = useLoader(THREE.TextureLoader, '/src/assets/character_noeye/texture_metallic.png');
 
   // Clone the model to avoid sharing materials between instances
   const clonedModel = useMemo(() => {
@@ -72,6 +72,8 @@ function HeldObject({ objectId }: { objectId: string }) {
   let Geometry = <boxGeometry args={scale || [1, 1, 1]} />;
   if (shape === 'cylinder') Geometry = <cylinderGeometry args={[scale?.[0] || 1, scale?.[0] || 1, scale?.[1] || 1]} />;
   if (shape === 'sphere') Geometry = <sphereGeometry args={[scale?.[0] || 1]} />;
+  if (shape === 'cone') Geometry = <coneGeometry args={[scale?.[0] || 1, scale?.[1] || 1, 24]} />;
+  if (shape === 'rocket') Geometry = <coneGeometry args={[scale?.[0] || 1, scale?.[1] || 1, 24]} />;
 
   return (
     <group position={[0, 1.5, 0]}>
@@ -192,8 +194,9 @@ const Player = React.memo(({ id, isControlled }: { id: string, isControlled: boo
         if (body.handle === rigidBodyRef.current?.handle) return;
 
         // check userData for ID
-        const userData = body.userData as { id?: string };
+        const userData = body.userData as { id?: string; type?: string };
         if (!userData || !userData.id) return;
+        if (userData.type !== 'dynamic') return;
 
         const pos = body.translation();
         const dx = pos.x - playerPos.x;

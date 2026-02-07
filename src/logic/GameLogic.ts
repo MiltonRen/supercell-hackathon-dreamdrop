@@ -69,23 +69,18 @@ New World Description:
     if (lower.includes("make")) {
       try {
         const isBunch = lower.includes("bunch") || lower.includes("some") || lower.includes("many") || lower.includes("more");
-        const count = isBunch ? Math.floor(Math.random() * 9) + 4 : 1; // 4 to 12
+        const count = isBunch ? 40 : 1;
+        const MAP_RANGE = 22;
+        const randomSpawnPosition = (): [number, number, number] => ([
+          (Math.random() * 2 - 1) * MAP_RANGE,
+          4 + Math.random() * 5,
+          (Math.random() * 2 - 1) * MAP_RANGE
+        ]);
         const addObjects = useStore.getState().addObjects;
         const newObjs: GameObject[] = [];
 
         for (let i = 0; i < count; i++) {
-          let pos: [number, number, number];
-
-          if (isBunch) {
-            // Spiral distribution to avoid overlaps
-            const angle = 0.5 * i;
-            const radius = 1.0 * Math.sqrt(i);
-            const x = Math.cos(angle) * radius;
-            const z = Math.sin(angle) * radius;
-            pos = [x, 5 + i * 1.0, z];
-          } else {
-            pos = [Math.random() * 4 - 2, 5, Math.random() * 4 - 2];
-          }
+          const pos = randomSpawnPosition();
 
           newObjs.push({
             id: uuidv4(),

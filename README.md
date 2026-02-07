@@ -26,18 +26,13 @@ npm run dev
 ## Made for SUPERCELL HACKATHON 2026
 Sponsor tools used:
 - Decart AI (for rendering game scenes)
-- Hyper3D (for making the character's 3d models)
+- Hyper3D (for making all 3d models)
+
+Other AI tools used:
+- Google Gemini (for coding and content generation within the game)
 
 ## Developer TODOs
-
-### Help me build this game to v2
-> for "winning" the current game player need to stack boxes to a certain height and wait for 10 seconds. lower the required height by half. Also, change current winning condition when stack blocks to the target height, all blocks are merged into a single cone (representing a rocket ship). And instead of displaying "you win", display "you have successfully built a rocket ship!" and have them click a button "launch" to go to the next scene (this will be a new scene).
-> switch to the new scene: First person view, the rocket flying across the world (last scene's final world_description) with arrow keys (balls coming toward you - avoid them!) space to shoot lasers to destroy balls
-> after 10 seconds of flying, you land to a new world (back to the original scene) - you can just display "new world discovered"! and have them click a button "land"
-> and then the game repeats...
-
-### more
-> use rodin's rocket ship model
+> suno for background music
 > new name: dream craft
 > stretch goal: use Reactor AI to generate cut-scenes before loading each game scene (4 mushmallow characters discovers a new world hidden in a mushroom farm... / sit in a rocket that flies toward a ocean world...)
 

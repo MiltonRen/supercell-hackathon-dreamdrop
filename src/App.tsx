@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Scene } from './components/Scene'
 import { DecartStream } from './components/DecartStream'
 import { Overlay } from './components/Overlay'
 import { WinPopup } from './components/WinPopup'
+import { FlightScene } from './components/FlightScene'
 import { useGameLogic } from './logic/GameLogic'
 import { useStore } from './store'
 import './App.css'
@@ -81,12 +82,55 @@ function App() {
   useGameLogic();
 
   const [mode, setMode] = useState<'menu' | 'local' | 'decart'>('menu');
+  const [phase, setPhase] = useState<'build' | 'flight'>('build');
   const hasWon = useStore(state => state.hasWon);
+  const resetRound = useStore(state => state.resetRound);
+  const setWorldDescription = useStore(state => state.setWorldDescription);
+  const [showWinPopup, setShowWinPopup] = useState(false);
+
+  const createRandomWorldDescription = () => {
+    const settings = [
+      "world of Amazon shipping center",
+      "world of surreal dreamscape",
+      "world of square candies",
+      "world of cosmos galaxy",
+      "world of Minecraft",
+    ];
+    const pick = (list: string[]) => list[Math.floor(Math.random() * list.length)];
+    const setting = pick(settings);
+    return `A ${setting}. Keep the background stable. Render high quality video game graphics in the Studio Ghibli animation art style.`;
+  };
+
+  const handleStart = (nextMode: 'local' | 'decart') => {
+    setPhase('build');
+    setMode(nextMode);
+  };
+
+  const handleLaunch = () => {
+    setPhase('flight');
+  };
+
+  const handleLand = () => {
+    setWorldDescription(createRandomWorldDescription());
+    resetRound();
+    setPhase('build');
+  };
+
+  useEffect(() => {
+    if (!hasWon || phase !== 'build') {
+      setShowWinPopup(false);
+      return;
+    }
+    const timer = window.setTimeout(() => {
+      setShowWinPopup(true);
+    }, 3000);
+    return () => window.clearTimeout(timer);
+  }, [hasWon, phase]);
 
   return (
     <div className="App" style={{ display: 'flex', width: '100vw', height: '100vh', overflow: 'hidden', position: 'relative' }}>
 
-      {mode === 'menu' && <StartScreen onStart={setMode} />}
+      {mode === 'menu' && <StartScreen onStart={handleStart} />}
 
       {/* 
          Structure varies by mode:
@@ -95,15 +139,22 @@ function App() {
       */}
 
       {/* Full Screen Scene Container (Used in Local Mode) */}
-      {mode === 'local' && (
+      {mode === 'local' && phase === 'build' && (
         <div style={{ flex: 1, position: 'relative' }}>
           <Scene />
           <div className="vignette" />
         </div>
       )}
 
+      {mode === 'local' && phase === 'flight' && (
+        <div style={{ flex: 1, position: 'relative' }}>
+          <FlightScene onLand={handleLand} />
+          <div className="vignette" />
+        </div>
+      )}
+
       {/* Decart Mode Structure */}
-      {mode === 'decart' && (
+      {mode === 'decart' && phase === 'build' && (
         <div style={{ flex: 1, position: 'relative', display: 'flex' }}>
           <DecartStream />
           <div className="vignette" />
@@ -124,13 +175,34 @@ function App() {
         </div>
       )}
 
+      {mode === 'decart' && phase === 'flight' && (
+        <div style={{ flex: 1, position: 'relative', display: 'flex' }}>
+          <DecartStream />
+          <div className="vignette" />
+
+          {/* Raw Debug View (Small) */}
+          <div style={{
+            position: 'absolute',
+            bottom: 20,
+            left: 20,
+            width: '320px',
+            height: '240px',
+            border: '2px solid #555',
+            background: '#000',
+            zIndex: 10
+          }}>
+            <FlightScene onLand={handleLand} />
+          </div>
+        </div>
+      )}
+
       {/* Overlay is always present (Chat, etc), but maybe hidden in menu? Let's keep it visible or hide? 
           Hide in menu for clean look.
       */}
-      {mode !== 'menu' && <Overlay />}
+      {mode !== 'menu' && phase === 'build' && <Overlay />}
 
       {/* Win Popup */}
-      {hasWon && mode !== 'menu' && <WinPopup onBackToHome={() => setMode('menu')} />}
+      {showWinPopup && mode !== 'menu' && phase === 'build' && <WinPopup onLaunch={handleLaunch} />}
 
     </div>
   )

@@ -1,17 +1,13 @@
-import { useStore } from '../store';
 import { soundSynthesizer } from '../utils/SoundSynthesizer';
 
 interface WinPopupProps {
-  onBackToHome: () => void;
+  onLaunch: () => void;
 }
 
-export function WinPopup({ onBackToHome }: WinPopupProps) {
-  const resetGame = useStore(state => state.resetGame);
-
-  const handleBackToHome = () => {
+export function WinPopup({ onLaunch }: WinPopupProps) {
+  const handleLaunch = () => {
     soundSynthesizer.playPickupSound();
-    resetGame();
-    onBackToHome();
+    onLaunch();
   };
 
   return (
@@ -28,33 +24,20 @@ export function WinPopup({ onBackToHome }: WinPopupProps) {
       justifyContent: 'center',
       zIndex: 2000,
       color: 'white',
-      gap: '30px',
-      animation: 'fadeIn 0.5s ease-in-out'
+      gap: '30px'
     }}>
-      <style>
-        {`
-          @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-          }
-          @keyframes celebrate {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-          }
-        `}
-      </style>
-
       <div style={{
-        fontSize: '72px',
+        fontSize: '56px',
         fontWeight: 'bold',
         background: 'linear-gradient(45deg, #FFD700, #FFA500, #FFD700)',
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',
         backgroundClip: 'text',
-        animation: 'celebrate 1s ease-in-out infinite',
-        textShadow: '0 0 30px rgba(255, 215, 0, 0.5)'
+        textShadow: '0 0 30px rgba(255, 215, 0, 0.5)',
+        textAlign: 'center',
+        lineHeight: 1.1
       }}>
-        🎉 You Win! 🎉
+        You built a rocket ship!
       </div>
 
       <div style={{
@@ -63,11 +46,11 @@ export function WinPopup({ onBackToHome }: WinPopupProps) {
         textAlign: 'center',
         maxWidth: '500px'
       }}>
-        Congratulations! You've successfully stacked blocks to reach the goal height!
+        Ready to launch into the next world?
       </div>
 
       <button
-        onClick={handleBackToHome}
+        onClick={handleLaunch}
         style={{
           padding: '20px 50px',
           fontSize: '28px',
@@ -90,7 +73,7 @@ export function WinPopup({ onBackToHome }: WinPopupProps) {
           e.currentTarget.style.boxShadow = '0 8px 20px rgba(102, 126, 234, 0.4)';
         }}
       >
-        Back to Home
+        launch
       </button>
     </div>
   );

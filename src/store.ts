@@ -14,7 +14,7 @@ export type GameObject = {
   position: [number, number, number];
   type: 'static' | 'dynamic';
   color: string;
-  shape: 'box' | 'sphere' | 'cylinder';
+  shape: 'box' | 'sphere' | 'cylinder' | 'cone' | 'rocket';
   scale?: [number, number, number];
 };
 
@@ -24,6 +24,11 @@ export type ChatMessage = {
   text: string;
   timestamp: number;
 };
+
+const createStarterObjects = (): GameObject[] => ([
+  { id: uuidv4(), position: [-2, 0, 2], type: 'dynamic', color: '#ff9831', shape: 'box', scale: [1, 1, 1] },
+  { id: uuidv4(), position: [-4, 0, 4], type: 'dynamic', color: '#ff9831', shape: 'box', scale: [1, 1, 1] },
+]);
 
 interface GameState {
   // World State
@@ -55,11 +60,13 @@ interface GameState {
   hasWon: boolean;
   winHeight: number;
   setHasWon: (hasWon: boolean) => void;
+  mergeObjectsIntoRocket: (rocket: { position: [number, number, number]; height: number; clearIds?: string[] }) => void;
+  resetRound: () => void;
   resetGame: () => void;
 }
 
 export const useStore = create<GameState>((set) => ({
-  worldDescription: "A mushroom farm where cute mushmallow characters run around and stack wood blocks. Keep the background stable. Render high quality video game graphics in the Studio Ghibli animation art style.",
+  worldDescription: "A mushroom world. Keep the background stable. Render high quality video game graphics in the Studio Ghibli animation art style.",
   setWorldDescription: (desc) => set({ worldDescription: desc }),
 
   players: {},
@@ -123,13 +130,7 @@ export const useStore = create<GameState>((set) => ({
     };
   }),
 
-  objects: [
-    // { id: 'static_1', position: [-20, 0, -20], type: 'static', color: '#fff', shape: 'box', scale: [4, 4, 4] },
-    // { id: 'static_2', position: [20, 0, -15], type: 'static', color: '#fff', shape: 'box', scale: [2, 4, 2] },
-    // { id: 'static_3', position: [15, 0, 20], type: 'static', color: '#fff', shape: 'box', scale: [2, 2, 2] },
-    { id: 'dynamic_1', position: [-2, 0, 2], type: 'dynamic', color: '#ff9831', shape: 'box', scale: [1, 1, 1] },
-    { id: 'dynamic_2', position: [-4, 0, 4], type: 'dynamic', color: '#ff9831', shape: 'box', scale: [1, 1, 1] },
-  ],
+  objects: createStarterObjects(),
   addObject: (obj) => set((state) => ({ objects: [...state.objects, obj] })),
   addObjects: (newObjs) => set((state) => ({ objects: [...state.objects, ...newObjs] })),
   removeObject: (id) => set((state) => ({ objects: state.objects.filter(o => o.id !== id) })),
@@ -140,12 +141,45 @@ export const useStore = create<GameState>((set) => ({
   })),
 
   hasWon: false,
-  winHeight: 12,
+  winHeight: 6,
   setHasWon: (hasWon) => set({ hasWon }),
+  mergeObjectsIntoRocket: (rocket) => set((state) => {
+    const updatedPlayers = Object.fromEntries(
+      Object.entries(state.players).map(([id, player]) => [id, { ...player, heldObjectId: null }])
+    );
+
+    const rocketHeight = Math.max(4, rocket.height);
+    const scaleFactor = Math.max(2.8, rocketHeight / 2);
+    const clearIds = new Set(rocket.clearIds ?? []);
+    const remainingObjects = state.objects.filter(obj => !clearIds.has(obj.id));
+    const rocketObject: GameObject = {
+      id: uuidv4(),
+      position: [rocket.position[0], 0, rocket.position[2]],
+      type: 'static',
+      color: '#f7f3ff',
+      shape: 'rocket',
+      scale: [scaleFactor, scaleFactor, scaleFactor]
+    };
+
+    return {
+      objects: [...remainingObjects, rocketObject],
+      players: updatedPlayers
+    };
+  }),
+  resetRound: () => set((state) => {
+    const updatedPlayers = Object.fromEntries(
+      Object.entries(state.players).map(([id, player]) => [id, { ...player, heldObjectId: null }])
+    );
+    return {
+      hasWon: false,
+      objects: createStarterObjects(),
+      players: updatedPlayers
+    };
+  }),
   resetGame: () => set({
     hasWon: false,
     messages: [],
-    worldDescription: "A miniature mushroom farm where cute mushmallow people run around and build cabins with wood blocks. Keep the background stable. Video game graphics in the Studio Ghibli animation style.",
+    worldDescription: "Mushroom world. Keep the background stable. Video game graphics in the Studio Ghibli animation style.",
     isDreaming: false,
   }),
 }));

@@ -38,3 +38,9 @@ Let's build this web game jam project. I want to render a web-based 3d top down 
 - For this POC we do a fake multiplayer, where multiple players can be controlled by the same local machine.
 - Simply press key "[" and "]" to switch between players, and use WASD to move the current player. Space key to pick up and drop objects.
 - When a player is not currently being controlled, it will be controlled by a simple AI, which will make it wander around the scene slowly, picking up things and dropping them randomly.
+
+## Let's build this game v2
+- for "winning" the current game player need to stack boxes to a certain height and wait for 10 seconds. lower the required height by half. Also, change current winning condition when stack blocks to the target height, all blocks are merged into a single cone (representing a rocket ship). And instead of displaying "you win", display "you have successfully built a rocket ship!" and have them click a button "launch" to go to the next scene (this will be a new scene).
+- switch to the new scene: First person view, the rocket flying across the world (last scene's final world_description) with arrow keys (balls coming toward you - avoid them!) space to shoot lasers to destroy balls
+- after 10 seconds of flying, you land to a new world (back to the original scene) - you can just display "new world discovered"! and have them click a button "land"
+- and then the game repeats...
