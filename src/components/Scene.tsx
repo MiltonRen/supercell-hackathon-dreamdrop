@@ -25,7 +25,7 @@ export function Scene() {
   return (
     <div style={{ width: '100%', height: '100%' }}>
       <Canvas shadows camera={{ position: [20, 10, 20], fov: 40 }}>
-        <color attach="background" args={['#ffffff']} />
+        <color attach="background" args={['#afdeff']} />
 
         <ambientLight intensity={0.5} />
         <directionalLight

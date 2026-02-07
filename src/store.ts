@@ -58,7 +58,7 @@ interface GameState {
 }
 
 export const useStore = create<GameState>((set) => ({
-  worldDescription: "A miniature mushroom farm where cute mushmallow people run around and build cabins with wood blocks. Keep the background stable. Video game graphics in the Studio Ghibli animation style.",
+  worldDescription: "A mushroom farm where cute mushmallow characters run around and stack wood blocks. Keep the background stable. Render high quality video game graphics in the Studio Ghibli animation art style.",
   setWorldDescription: (desc) => set({ worldDescription: desc }),
 
   players: {},
@@ -116,10 +116,11 @@ export const useStore = create<GameState>((set) => ({
   }),
 
   objects: [
-    { id: 'static_1', position: [-20, 0, -20], type: 'static', color: '#4e22ff', shape: 'box', scale: [4, 4, 4] },
-    { id: 'static_2', position: [20, 0, -15], type: 'static', color: '#4e22ff', shape: 'box', scale: [2, 4, 2] },
-    { id: 'static_3', position: [15, 0, 20], type: 'static', color: '#4e22ff', shape: 'box', scale: [2, 2, 2] },
+    // { id: 'static_1', position: [-20, 0, -20], type: 'static', color: '#fff', shape: 'box', scale: [4, 4, 4] },
+    // { id: 'static_2', position: [20, 0, -15], type: 'static', color: '#fff', shape: 'box', scale: [2, 4, 2] },
+    // { id: 'static_3', position: [15, 0, 20], type: 'static', color: '#fff', shape: 'box', scale: [2, 2, 2] },
     { id: 'dynamic_1', position: [-2, 0, 2], type: 'dynamic', color: '#ff9831', shape: 'box', scale: [1, 1, 1] },
+    { id: 'dynamic_2', position: [-4, 0, 4], type: 'dynamic', color: '#ff9831', shape: 'box', scale: [1, 1, 1] },
   ],
   addObject: (obj) => set((state) => ({ objects: [...state.objects, obj] })),
   addObjects: (newObjs) => set((state) => ({ objects: [...state.objects, ...newObjs] })),

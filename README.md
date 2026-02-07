@@ -23,4 +23,7 @@ npm run dev
 
 3. Go to ```http://localhost:5173/``` and have fun!
 
-### Made for SUPERCELL HACKATHON 2026
+## Made for SUPERCELL HACKATHON 2026
+Sponsor tools used:
+- Decart AI (for rendering game scenes)
+- Hyper3D (for making the character's 3d models)

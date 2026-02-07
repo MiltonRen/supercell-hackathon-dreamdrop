@@ -117,7 +117,7 @@ export function World() {
       <RigidBody type="fixed" colliders="cuboid">
         <mesh position={[0, -0.5, 0]} receiveShadow>
           <boxGeometry args={[50, 1, 50]} />
-          <meshStandardMaterial color="#808080" />
+          <meshStandardMaterial color="#814900" />
         </mesh>
       </RigidBody>
 

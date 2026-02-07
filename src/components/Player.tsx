@@ -1,9 +1,66 @@
 import React, { useRef, useEffect, useState, useMemo } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useLoader } from '@react-three/fiber';
 import { RigidBody, RapierRigidBody, useRapier } from '@react-three/rapier';
 import { useStore, Player as PlayerType, GameObject } from '../store';
 
 import * as THREE from 'three';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+
+function CharacterModel({ color, moveDirection }: { color: string, moveDirection: THREE.Vector3 }) {
+  const modelRef = useRef<THREE.Group>(null);
+  const targetRotation = useRef(0);
+
+  // Load OBJ model
+  const obj = useLoader(OBJLoader, '/src/assets/3d_model/base.obj');
+
+  // Load textures
+  const diffuseMap = useLoader(THREE.TextureLoader, '/src/assets/3d_model/texture_diffuse.png');
+  const normalMap = useLoader(THREE.TextureLoader, '/src/assets/3d_model/texture_normal.png');
+  const roughnessMap = useLoader(THREE.TextureLoader, '/src/assets/3d_model/texture_roughness.png');
+  const metalnessMap = useLoader(THREE.TextureLoader, '/src/assets/3d_model/texture_metallic.png');
+
+  // Clone the model to avoid sharing materials between instances
+  const clonedModel = useMemo(() => {
+    const clone = obj.clone();
+    clone.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        child.material = new THREE.MeshStandardMaterial({
+          map: diffuseMap,
+          normalMap: normalMap,
+          roughnessMap: roughnessMap,
+          metalnessMap: metalnessMap,
+          color: color,
+        });
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
+    return clone;
+  }, [obj, diffuseMap, normalMap, roughnessMap, metalnessMap, color]);
+
+  // Update rotation to face movement direction
+  useFrame(() => {
+    if (!modelRef.current) return;
+
+    // Calculate target rotation based on movement direction
+    if (moveDirection.length() > 0.1) {
+      targetRotation.current = Math.atan2(moveDirection.x, moveDirection.z);
+    }
+
+    // Smoothly interpolate rotation
+    const currentRotation = modelRef.current.rotation.y;
+    const diff = targetRotation.current - currentRotation;
+    // Normalize angle difference to [-PI, PI]
+    const normalizedDiff = Math.atan2(Math.sin(diff), Math.cos(diff));
+    modelRef.current.rotation.y += normalizedDiff * 0.15; // Smooth interpolation
+  });
+
+  return (
+    <group ref={modelRef} position={[0, 0, 0]} scale={0.8}>
+      <primitive object={clonedModel} />
+    </group>
+  );
+}
 
 function HeldObject({ objectId }: { objectId: string }) {
   const objects = useStore(state => state.objects);
@@ -17,7 +74,7 @@ function HeldObject({ objectId }: { objectId: string }) {
   if (shape === 'sphere') Geometry = <sphereGeometry args={[scale?.[0] || 1]} />;
 
   return (
-    <group position={[0, 2.5, 0]}>
+    <group position={[0, 1.5, 0]}>
       <mesh castShadow receiveShadow>
         {Geometry}
         <meshStandardMaterial color={color} />
@@ -38,6 +95,7 @@ const Player = React.memo(({ id, isControlled }: { id: string, isControlled: boo
 
   // Movement Logic
   const keys = useRef<{ [key: string]: boolean }>({});
+  const currentMoveDirection = useRef(new THREE.Vector3(0, 0, 0));
 
   // AI State
   const aiState = useRef({
@@ -109,7 +167,7 @@ const Player = React.memo(({ id, isControlled }: { id: string, isControlled: boo
         // Capture data into local constants to avoid TS narrowing issues in nested loops
         const stackX = found.pos.x;
         const stackZ = found.pos.z;
-        let highestY = found.pos.y + found.height;
+        let highestY = found.pos.y + found.height / 2; // Position is at center, so add half height
         const ALIGN_EPSILON = 0.5;
 
         world.forEachRigidBody((body) => {
@@ -119,7 +177,7 @@ const Player = React.memo(({ id, isControlled }: { id: string, isControlled: boo
           const p = body.translation();
           if (Math.abs(p.x - stackX) < ALIGN_EPSILON && Math.abs(p.z - stackZ) < ALIGN_EPSILON) {
             const h = u.scale ? u.scale[1] : 1;
-            const top = p.y + h;
+            const top = p.y + h / 2; // Position is at center, so add half height
             if (top > highestY) highestY = top;
           }
         });
@@ -129,7 +187,7 @@ const Player = React.memo(({ id, isControlled }: { id: string, isControlled: boo
 
       const finalPos: [number, number, number] = targetPos || [
         playerPos.x + (Math.random() - 0.5) * 2,
-        playerPos.y + 2, // Drop from a bit higher for safety
+        playerPos.y + 1, // Drop from character height
         playerPos.z + (Math.random() - 0.5) * 2
       ];
 
@@ -228,6 +286,9 @@ const Player = React.memo(({ id, isControlled }: { id: string, isControlled: boo
       moveDirection.copy(aiState.current.direction);
     }
 
+    // Store move direction for character rotation
+    currentMoveDirection.current.copy(moveDirection);
+
     // Apply Velocity
     const currentVel = rigidBodyRef.current.linvel();
     // Maintain Y velocity (gravity), replace X/Z
@@ -252,10 +313,8 @@ const Player = React.memo(({ id, isControlled }: { id: string, isControlled: boo
         lockRotations
         friction={0}
       >
-        <mesh castShadow receiveShadow position={[0, 1, 0]}>
-          <capsuleGeometry args={[0.5, 1, 4, 8]} />
-          <meshStandardMaterial color={player.color} />
-        </mesh>
+        {/* 3D Character Model */}
+        <CharacterModel color={player.color} moveDirection={currentMoveDirection.current} />
 
         {/* Held Object Visual */}
         {player.heldObjectId && <HeldObject objectId={player.heldObjectId} />}
