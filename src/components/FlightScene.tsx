@@ -201,6 +201,7 @@ function FlightStage({ paused, onCrash, onLand }: { paused: boolean; onCrash: ()
         const dz = orb.z - laser.z;
         const distSq = dx * dx + dy * dy + dz * dz;
         if (distSq < (orb.radius + LASER_RADIUS) ** 2) {
+          soundSynthesizer.playDropSound();
           destroyedOrbIds.add(orb.id);
           destroyedLaserIds.add(laser.id);
           break;
@@ -369,7 +370,7 @@ function CrashPopup({ onRetry }: { onRetry: () => void }) {
         lineHeight: 1.1,
         textShadow: '0 0 20px rgba(255,80,80,0.35)'
       }}>
-        oops you hit a astroid
+        Our spaceship took a hit 😅
       </div>
       <button
         onClick={onRetry}

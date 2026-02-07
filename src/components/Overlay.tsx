@@ -70,7 +70,7 @@ export function Overlay() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <img
             src="/small.png"
-            alt="DreamStack Logo"
+            alt="DreamCraft Logo"
             style={{
               width: '54px',
               height: '54px',
@@ -78,7 +78,7 @@ export function Overlay() {
             }}
           />
           <div>
-            <h3 style={{ margin: 0, marginTop: '6px', color: '#fff', fontSize: '1.2rem', fontWeight: 700, letterSpacing: '0.5px' }}>DreamStack</h3>
+            <h3 style={{ margin: 0, marginTop: '6px', color: '#fff', fontSize: '1.2rem', fontWeight: 700, letterSpacing: '0.5px' }}>DreamCraft</h3>
             <small style={{ color: '#888', fontWeight: 700 }}>Playing as {currentPlayerId}</small>
           </div>
         </div>

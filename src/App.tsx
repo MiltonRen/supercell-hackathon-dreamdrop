@@ -4,10 +4,13 @@ import { DecartStream } from './components/DecartStream'
 import { Overlay } from './components/Overlay'
 import { WinPopup } from './components/WinPopup'
 import { FlightScene } from './components/FlightScene'
+import { Bgm } from './components/Bgm'
 import { useGameLogic } from './logic/GameLogic'
 import { useStore } from './store'
 import './App.css'
 import { soundSynthesizer } from './utils/SoundSynthesizer';
+import buildBgm from './assets/bgm_build.mp3';
+import flightBgm from './assets/bgm_flight.mp3';
 
 function StartScreen({ onStart }: { onStart: (mode: 'local' | 'decart') => void }) {
   return (
@@ -28,16 +31,16 @@ function StartScreen({ onStart }: { onStart: (mode: 'local' | 'decart') => void 
     }}>
       <img
         src="/dream.png"
-        alt="DreamStack Logo"
+        alt="DreamCraft Logo"
         style={{
           width: '270px',
           height: '180px',
           objectFit: 'cover',
         }}
       />
-      <h1 style={{ fontSize: 64, marginTop: -20 }}>DreamStack</h1>
+      <h1 style={{ fontSize: 64, marginTop: -20 }}>DreamCraft</h1>
       <div style={{ fontSize: 18, marginTop: -40, width: '33%', textAlign: 'center' }}>
-        How to play: arrow keys to move, space to pick up / drop off blocks, keyboard to chat, enter to send message. Include "world" in your message to change the world, include "make" in your message to create new blocks. Set up your own API keys!
+        Arrow keys to move, space to pick up & drop off blocks, keyboard to chat, enter to send message. Include "world" in your message to change the world, include "make" in your message to create new blocks. Stack the blocks to a certain height to build a spaceship!
       </div>
       <div style={{ display: 'flex', gap: '20px', marginTop: 20 }}>
         <button
@@ -203,6 +206,10 @@ function App() {
 
       {/* Win Popup */}
       {showWinPopup && mode !== 'menu' && phase === 'build' && <WinPopup onLaunch={handleLaunch} />}
+
+      {/* Background music */}
+      {mode !== 'menu' && phase === 'build' && <Bgm src={buildBgm} />}
+      {mode !== 'menu' && phase === 'flight' && <Bgm src={flightBgm} />}
 
     </div>
   )

@@ -1,4 +1,4 @@
-# DreamStack
+# DreamCraft
 
 ## Game idea
 

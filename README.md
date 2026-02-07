@@ -1,4 +1,4 @@
-## Welcome to DreamStack!
+## Welcome to DreamCraft!
 
 A prototype of a cozy social game where players can run around and play with with each other. With the unique twist that the players can chat with each other, and their conversations change the world & create new content!
 
@@ -32,8 +32,6 @@ Other AI tools used:
 - Google Gemini (for coding and content generation within the game)
 
 ## Developer TODOs
-> suno for background music
-> new name: dream craft
 > stretch goal: use Reactor AI to generate cut-scenes before loading each game scene (4 mushmallow characters discovers a new world hidden in a mushroom farm... / sit in a rocket that flies toward a ocean world...)
 
 ### submission video

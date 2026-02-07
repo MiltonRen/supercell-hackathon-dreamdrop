@@ -37,7 +37,7 @@ export function WinPopup({ onLaunch }: WinPopupProps) {
         textAlign: 'center',
         lineHeight: 1.1
       }}>
-        You built a rocket ship!
+        Spaceship Built!
       </div>
 
       <div style={{
@@ -46,7 +46,7 @@ export function WinPopup({ onLaunch }: WinPopupProps) {
         textAlign: 'center',
         maxWidth: '500px'
       }}>
-        Ready to launch into the next world?
+        Ready to launch into the next world? Arrow keys to move, space to shoot.
       </div>
 
       <button
