@@ -40,7 +40,7 @@ export function useGameLogic() {
         const prompt = `
 Current World Description: "${worldDescription}"
 Player "${playerId}" says: "${text}"
-Goal: Update the world description based on the player's intent. Keep it concise (1-2 sentences).
+Goal: Update the world description based on the player's intent. Keep the rendering guideline + Studio Ghibli animation style the same. Keep it concise.
 New World Description:
              `;
 
@@ -66,44 +66,37 @@ New World Description:
     // Rule 2: "make" -> Create Object
     if (lower.includes("make")) {
       try {
-        const prompt = `
-Player "${playerId}" says: "${text}"
-Goal: Extract the object the player wants to make.
-Return a JSON object with:
-{
-  "color": string (hex code),
-  "shape": "box" | "sphere" | "cylinder"
-}
-Only return JSON.
-              `;
+        const isBunch = lower.includes("bunch");
+        const count = isBunch ? Math.floor(Math.random() * 9) + 4 : 1; // 4 to 12
+        const addObjects = useStore.getState().addObjects;
+        const newObjs: GameObject[] = [];
 
-        const response = await ai.models.generateContent({
-          model: 'gemini-3-flash-preview',
-          contents: prompt,
-          config: {
-            responseMimeType: 'application/json'
+        for (let i = 0; i < count; i++) {
+          let pos: [number, number, number];
+
+          if (isBunch) {
+            // Spiral distribution to avoid overlaps
+            const angle = 0.5 * i;
+            const radius = 1.0 * Math.sqrt(i);
+            const x = Math.cos(angle) * radius;
+            const z = Math.sin(angle) * radius;
+            pos = [x, 5 + i * 1.0, z];
+          } else {
+            pos = [Math.random() * 4 - 2, 5, Math.random() * 4 - 2];
           }
-        });
 
-        const responseText = response.text;
-
-        if (responseText) {
-          // Clean markdown json if present (though responseMimeType should handle it)
-          const jsonStr = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
-          const data = JSON.parse(jsonStr);
-
-          const newObj: GameObject = {
+          newObjs.push({
             id: uuidv4(),
-            position: [Math.random() * 10 - 5, 5, Math.random() * 10 - 5],
+            position: pos,
             type: 'dynamic',
-            color: data.color || 'white',
-            shape: data.shape || 'box',
+            color: '#ff9831',
+            shape: 'box',
             scale: [1, 1, 1]
-          };
-          addObject(newObj);
+          });
         }
+        addObjects(newObjs);
       } catch (e) {
-        console.error("Gemini Object Creation Failed", e);
+        console.error("Object Creation Failed", e);
       }
     }
   };

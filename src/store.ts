@@ -43,6 +43,7 @@ interface GameState {
   // Objects
   objects: GameObject[];
   addObject: (obj: GameObject) => void;
+  addObjects: (objs: GameObject[]) => void;
   removeObject: (id: string) => void;
 
   // Chat
@@ -51,7 +52,7 @@ interface GameState {
 }
 
 export const useStore = create<GameState>((set) => ({
-  worldDescription: "A cozy farm village",
+  worldDescription: "A cozy mushroom farm where characters run around. Keep the background static and very little variation. Video game graphics with Studio Ghibli animation style.",
   setWorldDescription: (desc) => set({ worldDescription: desc }),
 
   players: {},
@@ -109,12 +110,13 @@ export const useStore = create<GameState>((set) => ({
   }),
 
   objects: [
-    { id: 'barn', position: [-20, 0, -20], type: 'static', label: 'Big Barn', color: '#8B4513', shape: 'box', scale: [4, 4, 4] },
-    { id: 'tree1', position: [20, 0, -15], type: 'static', label: 'Oak Tree', color: '#228B22', shape: 'cylinder', scale: [2, 4, 2] },
-    { id: 'well', position: [15, 0, 20], type: 'static', label: 'Old Well', color: '#808080', shape: 'cylinder', scale: [2, 2, 2] },
-    { id: 'crate1', position: [-2, 0, 2], type: 'static', label: 'Small Crate', color: '#CD853F', shape: 'box', scale: [1, 1, 1] },
+    { id: 'static_1', position: [-20, 0, -20], type: 'static', color: '#4e22ff', shape: 'box', scale: [4, 4, 4] },
+    { id: 'static_2', position: [20, 0, -15], type: 'static', color: '#4e22ff', shape: 'box', scale: [2, 4, 2] },
+    { id: 'static_3', position: [15, 0, 20], type: 'static', color: '#4e22ff', shape: 'box', scale: [2, 2, 2] },
+    { id: 'dynamic_1', position: [-2, 0, 2], type: 'dynamic', color: '#ff9831', shape: 'box', scale: [1, 1, 1] },
   ],
   addObject: (obj) => set((state) => ({ objects: [...state.objects, obj] })),
+  addObjects: (newObjs) => set((state) => ({ objects: [...state.objects, ...newObjs] })),
   removeObject: (id) => set((state) => ({ objects: state.objects.filter(o => o.id !== id) })),
 
   messages: [],

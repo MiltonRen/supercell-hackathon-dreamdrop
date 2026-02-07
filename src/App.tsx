@@ -37,7 +37,7 @@ function StartScreen({ onStart }: { onStart: (mode: 'local' | 'decart') => void 
             borderRadius: '8px'
           }}
         >
-          Start with Decart AI
+          Start With AI Rendering
         </button>
         <button
           onClick={() => onStart('local')}
@@ -51,7 +51,7 @@ function StartScreen({ onStart }: { onStart: (mode: 'local' | 'decart') => void 
             borderRadius: '8px'
           }}
         >
-          Start Local (No AI)
+          Debug Mode (No Rendering)
         </button>
       </div>
     </div>

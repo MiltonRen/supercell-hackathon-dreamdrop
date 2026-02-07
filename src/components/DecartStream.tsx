@@ -105,19 +105,6 @@ export function DecartStream() {
           autoPlay
           playsInline
         />
-        <div style={{
-          position: 'absolute',
-          top: 10,
-          left: 10,
-          background: 'rgba(0,0,0,0.5)',
-          padding: '5px 10px',
-          color: 'white',
-          borderRadius: 4,
-          pointerEvents: 'none'
-        }}>
-          Decart Status: {status} <br />
-          Prompt: {worldDescription}
-        </div>
       </div>
     </div>
   );

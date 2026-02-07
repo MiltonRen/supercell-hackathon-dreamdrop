@@ -111,7 +111,7 @@ export function Overlay() {
             {msg.playerId !== currentPlayerId && (
               <div style={{ fontSize: '0.8em', color: '#656565ff', marginBottom: '2px', textAlign: 'left' }}>{msg.playerId}</div>
             )}
-            <div style={{ color: msg.playerId === currentPlayerId ? '#ffffffff' : '#131313ff', textAlign: msg.playerId === currentPlayerId ? 'right' : 'left' }}>{msg.text}</div>
+            <div style={{ color: msg.playerId === currentPlayerId ? '#ffffffff' : '#131313ff', textAlign: 'left' }}>{msg.text}</div>
           </div>
         ))}
       </div>

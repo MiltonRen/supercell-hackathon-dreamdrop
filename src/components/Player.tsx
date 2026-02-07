@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { RigidBody, RapierRigidBody, useRapier } from '@react-three/rapier';
 import { useStore, Player as PlayerType, GameObject } from '../store';
@@ -26,12 +26,14 @@ function HeldObject({ objectId }: { objectId: string }) {
   );
 }
 
-function Player({ player, isControlled }: { player: PlayerType, isControlled: boolean }) {
+const Player = React.memo(({ id, isControlled }: { id: string, isControlled: boolean }) => {
+  const player = useStore(state => state.players[id]);
+  if (!player) return null;
+
   const rigidBodyRef = useRef<RapierRigidBody>(null);
   const updatePlayerPosition = useStore(state => state.updatePlayerPosition);
   const pickupObject = useStore(state => state.pickupObject);
   const dropObject = useStore(state => state.dropObject);
-  const objects = useStore(state => state.objects);
   const { world } = useRapier();
 
   // Movement Logic
@@ -66,28 +68,72 @@ function Player({ player, isControlled }: { player: PlayerType, isControlled: bo
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
     };
-  }, [isControlled, player.heldObjectId, objects]); // Deps for interaction closure
+  }, [isControlled, player.heldObjectId]); // Removed 'objects' from deps, we use world query instead for performance
 
   const handleInteraction = () => {
     if (!rigidBodyRef.current) return;
     const playerPos = rigidBodyRef.current.translation();
 
     if (player.heldObjectId) {
-      // Drop
-      // Calculate drop position in front of player
-      // We need player rotation ideally, but currently we lock rotations. 
-      // We can infer forward from movement or just drop at current pos + offset
+      // Drop with Stacking Logic
+      let targetPos: [number, number, number] | null = null;
+      const SNAP_RADIUS = 2.0;
 
-      // Since we don't track rotation explicitly (lockRotations), let's assume "Forward" is based on last movement or just Z+? 
-      // Better: Drop slightly in front or just at same x,z but distinct.
-      // Actually, without rotation, "front" is ambiguous. Let's drop at random offset close by.
-      const dropPos: [number, number, number] = [
+      // Find closest object to snap to
+      let closestObj: { id: string, pos: { x: number, y: number, z: number }, height: number } | null = null;
+      let minDistSq = SNAP_RADIUS * SNAP_RADIUS;
+
+      world.forEachRigidBody((body) => {
+        if (body.handle === rigidBodyRef.current?.handle) return;
+
+        const userData = body.userData as { id?: string, scale?: [number, number, number] };
+        if (!userData || !userData.id || userData.id === player.heldObjectId) return;
+
+        const bPos = body.translation();
+        const dx = bPos.x - playerPos.x;
+        const dz = bPos.z - playerPos.z;
+        const distSq = dx * dx + dz * dz;
+
+        if (distSq < minDistSq) {
+          minDistSq = distSq;
+          closestObj = {
+            id: userData.id,
+            pos: { x: bPos.x, y: bPos.y, z: bPos.z },
+            height: userData.scale ? userData.scale[1] : 1
+          };
+        }
+      });
+
+      if (closestObj) {
+        const found = closestObj as { pos: { x: number, y: number, z: number }, height: number };
+        // Capture data into local constants to avoid TS narrowing issues in nested loops
+        const stackX = found.pos.x;
+        const stackZ = found.pos.z;
+        let highestY = found.pos.y + found.height;
+        const ALIGN_EPSILON = 0.5;
+
+        world.forEachRigidBody((body) => {
+          const u = body.userData as { id?: string, scale?: [number, number, number] };
+          if (!u || !u.id || u.id === player.heldObjectId) return;
+
+          const p = body.translation();
+          if (Math.abs(p.x - stackX) < ALIGN_EPSILON && Math.abs(p.z - stackZ) < ALIGN_EPSILON) {
+            const h = u.scale ? u.scale[1] : 1;
+            const top = p.y + h;
+            if (top > highestY) highestY = top;
+          }
+        });
+
+        targetPos = [stackX, highestY + 0.05, stackZ];
+      }
+
+      const finalPos: [number, number, number] = targetPos || [
         playerPos.x + (Math.random() - 0.5) * 2,
-        playerPos.y, // Let physics resolve height
+        playerPos.y + 2, // Drop from a bit higher for safety
         playerPos.z + (Math.random() - 0.5) * 2
       ];
-      dropObject(player.id, dropPos);
 
+      dropObject(player.id, finalPos);
     } else {
       // Pickup
       // Find closest object
@@ -135,12 +181,12 @@ function Player({ player, isControlled }: { player: PlayerType, isControlled: bo
       rigidBodyRef.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
     }
 
+    // Only update the store if the position has changed significantly to avoid spam
     updatePlayerPosition(player.id, [pos.x, pos.y, pos.z]);
 
     let moveDirection = new THREE.Vector3(0, 0, 0);
 
     if (isControlled) {
-      // Arrow Keys
       // Arrow Keys
       const speed = 5;
       const direction = new THREE.Vector3(0, 0, 0);
@@ -167,11 +213,11 @@ function Player({ player, isControlled }: { player: PlayerType, isControlled: bo
       // AI Logic
       if (state.clock.elapsedTime > aiState.current.nextActionTime) {
         // New Plan
-        aiState.current.nextActionTime = state.clock.elapsedTime + 1 + Math.random() * 3;
+        aiState.current.nextActionTime = state.clock.elapsedTime + 1 + Math.random() * 2;
 
         // Random Move
         const angle = Math.random() * Math.PI * 2;
-        const speed = 2;
+        const speed = 1;
         aiState.current.direction.set(Math.cos(angle) * speed, 0, Math.sin(angle) * speed);
 
         // Random Action
@@ -213,27 +259,22 @@ function Player({ player, isControlled }: { player: PlayerType, isControlled: bo
 
         {/* Held Object Visual */}
         {player.heldObjectId && <HeldObject objectId={player.heldObjectId} />}
-
       </RigidBody>
-
-      {/* Name Tag */}
-      {/* Name Tag Removed */}
     </group>
   );
-}
+});
 
 export function Players() {
-  const players = useStore(state => state.players);
+  const playerIdsStr = useStore(state => Object.keys(state.players).sort().join(','));
+  const playerIds = useMemo(() => playerIdsStr.split(',').filter(Boolean), [playerIdsStr]);
   const currentPlayerId = useStore(state => state.currentPlayerId);
   const setCurrentPlayer = useStore(state => state.setCurrentPlayer);
-  const addPlayer = useStore(state => state.addPlayer);
 
   // Keyboard listener for switching players '[' and ']'
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA') return;
 
-      const playerIds = Object.keys(players);
       if (playerIds.length === 0) return;
 
       const currentIndex = playerIds.indexOf(currentPlayerId || "");
@@ -248,16 +289,16 @@ export function Players() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [players, currentPlayerId, setCurrentPlayer]);
+  }, [playerIds, currentPlayerId, setCurrentPlayer]);
 
 
   return (
     <>
-      {Object.values(players).map(p => (
+      {playerIds.map(id => (
         <Player
-          key={p.id}
-          player={p}
-          isControlled={p.id === currentPlayerId}
+          key={id}
+          id={id}
+          isControlled={id === currentPlayerId}
         />
       ))}
     </>

@@ -2,7 +2,7 @@ import { Canvas } from '@react-three/fiber';
 import { Physics } from '@react-three/rapier';
 import { World } from './World';
 import { Players } from './Player'; // We will create a component that maps players
-import { Stats, OrbitControls } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
 import { useStore } from '../store';
 import { useEffect } from 'react';
 
@@ -14,16 +14,18 @@ export function Scene() {
   useEffect(() => {
     // Initialize default players if none exist
     if (Object.keys(players).length === 0) {
-      addPlayer("player1", "white");
-      addPlayer("player2", "white");
-      setCurrentPlayer("player1");
+      addPlayer("Millie", "white");
+      addPlayer("Boba", "red");
+      addPlayer("Poco", "yellow");
+      addPlayer("Superbad", "green");
+      setCurrentPlayer("Millie");
     }
   }, []);
 
   return (
     <div style={{ width: '100%', height: '100%' }}>
-      <Canvas shadows camera={{ position: [40, 40, 20], fov: 40 }}>
-        <color attach="background" args={['#87CEEB']} />
+      <Canvas shadows camera={{ position: [20, 10, 20], fov: 40 }}>
+        <color attach="background" args={['#ffffff']} />
 
         <ambientLight intensity={0.5} />
         <directionalLight
@@ -39,7 +41,6 @@ export function Scene() {
         </Physics>
 
         <OrbitControls makeDefault />
-        <Stats />
       </Canvas>
     </div>
   );
