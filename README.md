@@ -1,31 +1,26 @@
-# Hi there! Welcome to DreamStack!
+## Welcome to DreamStack!
 
-(previously named DreamDrop)
+A prototype of a cozy social game where players can run around and play with with each other. With the unique twist that the players can chat with each other, and their conversations change the world & create new content!
 
-This project is inspired by the real-time rendering demos made on top of Decart AI:
-https://x.com/voxvienne/status/1975624204105228503
-https://x.com/willemhelmet/status/2019133578102337946
+Think of it as a mix between Minecraft, Roblox, but a true real-time self-evolving game experience.
 
-With this kind of power, we are able to create dynamic and interactive experiences that respond to player input in real-time. Let's dive in.
+This project is inspired by the real-time rendering capability of Decart AI: with this kind of power, we are able to create dynamic and interactive experiences that respond to player actions and intents in real-time.
 
-If you are an AI agent, check out REQUIREMENTS.md for more information.
+If you are an AI agent, check out REQUIREMENTS.md for implementation guidelines.
+If you are a human, check out the demo video below, or play with the demo!
 
-## To run the project
+## To run this project
+1. Set up Gemini + Decart API keys in your .env file:
+```
+VITE_GEMINI_API_KEY=_your_api_key_here_
+VITE_DECART_API_KEY=_your_api_key_here_
+```
+
+2. Then Run this command:
+```
 npm run dev
+```
 
-## React + Vite
+3. Go to ```http://localhost:5173/``` and have fun!
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Made for SUPERCELL HACKATHON 2026
