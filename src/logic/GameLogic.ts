@@ -66,7 +66,7 @@ New World Description:
     // Rule 2: "make" -> Create Object
     if (lower.includes("make")) {
       try {
-        const isBunch = lower.includes("bunch");
+        const isBunch = lower.includes("bunch") || lower.includes("some") || lower.includes("many") || lower.includes("more");
         const count = isBunch ? Math.floor(Math.random() * 9) + 4 : 1; // 4 to 12
         const addObjects = useStore.getState().addObjects;
         const newObjs: GameObject[] = [];

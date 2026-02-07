@@ -4,6 +4,7 @@ import { DecartStream } from './components/DecartStream'
 import { Overlay } from './components/Overlay'
 import { useGameLogic } from './logic/GameLogic'
 import './App.css'
+import { FrontSide } from 'three';
 
 function StartScreen({ onStart }: { onStart: (mode: 'local' | 'decart') => void }) {
   return (
@@ -22,37 +23,52 @@ function StartScreen({ onStart }: { onStart: (mode: 'local' | 'decart') => void 
       color: 'white',
       gap: '20px'
     }}>
-      <h1>Welcome to DreamDrop</h1>
-      <p>Choose your experience:</p>
-      <div style={{ display: 'flex', gap: '20px' }}>
+      <img
+        src="/dream.png"
+        alt="DreamStack Logo"
+        style={{
+          width: '270px',
+          height: '180px',
+          objectFit: 'cover',
+        }}
+      />
+      <h1 style={{ fontSize: 64, marginTop: -20 }}>DreamStack</h1>
+      <div style={{ fontSize: 18, marginTop: -40, width: '33%', textAlign: 'center' }}>
+        How to play: arrow keys to move, space to pick up / drop off blocks, keyboard to chat, enter to send message. Include "world" in your message to change the world, include "make" in your message to create new blocks.
+      </div>
+      <div style={{ display: 'flex', gap: '20px', marginTop: 20 }}>
         <button
           onClick={() => onStart('decart')}
           style={{
             padding: '20px 40px',
-            fontSize: '18px',
+            fontSize: '24px',
+            fontWeight: 'bold',
             cursor: 'pointer',
-            background: '#646cff',
+            background: '#3e71ff',
             color: 'white',
             border: 'none',
             borderRadius: '8px'
           }}
         >
-          Start With AI Rendering
+          Start Game
         </button>
         <button
           onClick={() => onStart('local')}
           style={{
             padding: '20px 40px',
-            fontSize: '18px',
+            fontSize: '24px',
             cursor: 'pointer',
-            background: '#2ecc71',
+            background: '#505050',
             color: 'white',
             border: 'none',
             borderRadius: '8px'
           }}
         >
-          Debug Mode (No Rendering)
+          Debug Mode
         </button>
+      </div>
+      <div style={{ fontSize: 18, fontWeight: 'bold', color: '#4a4a4aff', marginTop: 40, width: '33%', textAlign: 'center' }}>
+        SUPERCELL HACKATHON 2026
       </div>
     </div>
   );
@@ -79,6 +95,7 @@ function App() {
       {mode === 'local' && (
         <div style={{ flex: 1, position: 'relative' }}>
           <Scene />
+          <div className="vignette" />
         </div>
       )}
 
@@ -86,6 +103,7 @@ function App() {
       {mode === 'decart' && (
         <div style={{ flex: 1, position: 'relative', display: 'flex' }}>
           <DecartStream />
+          <div className="vignette" />
 
           {/* Raw Debug View (Small) */}
           <div style={{
@@ -99,7 +117,6 @@ function App() {
             zIndex: 10 // On top of video
           }}>
             <Scene />
-            <div style={{ position: 'absolute', top: 0, left: 0, background: 'rgba(0,0,0,0.5)', color: 'white', fontSize: '10px', padding: '2px' }}>RAW VIEW</div>
           </div>
         </div>
       )}

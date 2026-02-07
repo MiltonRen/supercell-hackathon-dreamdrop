@@ -1,4 +1,6 @@
-# Hi there! Welcome to DreamDrop!
+# Hi there! Welcome to DreamStack!
+
+(previously named DreamDrop)
 
 This project is inspired by the real-time rendering demos made on top of Decart AI:
 https://x.com/voxvienne/status/1975624204105228503

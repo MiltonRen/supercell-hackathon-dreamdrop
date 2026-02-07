@@ -52,7 +52,7 @@ interface GameState {
 }
 
 export const useStore = create<GameState>((set) => ({
-  worldDescription: "A cozy mushroom farm where characters run around. Keep the background static and very little variation. Video game graphics with Studio Ghibli animation style.",
+  worldDescription: "A miniature mushroom farm where cute mushmallow people run around and build cabins with wood blocks. Keep the background stable. Video game graphics in the Studio Ghibli animation style.",
   setWorldDescription: (desc) => set({ worldDescription: desc }),
 
   players: {},

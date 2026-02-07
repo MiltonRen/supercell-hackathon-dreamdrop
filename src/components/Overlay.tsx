@@ -46,19 +46,42 @@ export function Overlay() {
     if (e.key === 'Enter') handleSend();
   };
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
+  }, [messages]);
+
   return (
     <div style={{
       display: 'flex',
       flexDirection: 'column',
       height: '100%',
       width: '300px',
-      background: '#202020',
-      borderLeft: '1px solid #444',
+      background: '#000',
       pointerEvents: 'auto'
     }}>
-      <div style={{ padding: '20px', borderBottom: '1px solid #444' }}>
-        <h3 style={{ margin: 0, color: '#fff' }}>DreamDrop</h3>
-        <small style={{ color: '#888' }}>Playing as: {currentPlayerId}</small>
+      <div style={{ padding: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <img
+            src="/small.png"
+            alt="DreamStack Logo"
+            style={{
+              width: '54px',
+              height: '54px',
+              objectFit: 'cover',
+            }}
+          />
+          <div>
+            <h3 style={{ margin: 0, marginTop: '6px', color: '#fff', fontSize: '1.2rem', fontWeight: 700, letterSpacing: '0.5px' }}>DreamStack</h3>
+            <small style={{ color: '#888' }}>Playing as: {currentPlayerId}</small>
+          </div>
+        </div>
 
         <style>
           {`
@@ -99,7 +122,10 @@ export function Overlay() {
         )}
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto', padding: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      <div
+        ref={scrollRef}
+        style={{ flex: 1, overflowY: 'auto', padding: '10px', display: 'flex', flexDirection: 'column', gap: '8px', scrollbarWidth: 'none' }}
+      >
         {messages.map(msg => (
           <div key={msg.id} style={{
             background: msg.playerId === currentPlayerId ? '#1d9dffff' : '#e9e9e9ff',
@@ -116,14 +142,14 @@ export function Overlay() {
         ))}
       </div>
 
-      <div style={{ padding: '10px', borderTop: '1px solid #444' }}>
+      <div style={{ padding: '20px' }}>
         <input
           ref={inputRef}
           style={{
-            width: '100%',
+            width: '90%',
             padding: '10px',
             borderRadius: '4px',
-            border: '1px solid #555',
+            border: '3px solid #555',
             background: '#111',
             color: 'white'
           }}
@@ -133,9 +159,6 @@ export function Overlay() {
           onKeyDown={handleKeyDown}
           disabled={!currentPlayerId}
         />
-        <div style={{ fontSize: '0.7em', color: '#666', marginTop: '5px' }}>
-          Try: "make a red box" or "world is underwater"
-        </div>
       </div>
     </div>
   );

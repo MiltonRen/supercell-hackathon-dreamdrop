@@ -29,10 +29,17 @@ export function Scene() {
 
         <ambientLight intensity={0.5} />
         <directionalLight
-          position={[10, 10, 5]}
-          intensity={1}
+          position={[30, 30, 30]}
+          intensity={1.5}
           castShadow
-          shadow-mapSize={[1024, 1024]}
+          shadow-mapSize={[4096, 4096]}
+          shadow-camera-left={-50}
+          shadow-camera-right={50}
+          shadow-camera-top={50}
+          shadow-camera-bottom={-50}
+          shadow-camera-near={0.1}
+          shadow-camera-far={200}
+          shadow-bias={-0.0001}
         />
 
         <Physics debug={false}>
