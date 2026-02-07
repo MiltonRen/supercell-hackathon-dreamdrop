@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { Scene } from './components/Scene'
 import { DecartStream } from './components/DecartStream'
 import { Overlay } from './components/Overlay'
+import { WinPopup } from './components/WinPopup'
 import { useGameLogic } from './logic/GameLogic'
+import { useStore } from './store'
 import './App.css'
 import { FrontSide } from 'three';
 
@@ -79,6 +81,7 @@ function App() {
   useGameLogic();
 
   const [mode, setMode] = useState<'menu' | 'local' | 'decart'>('menu');
+  const hasWon = useStore(state => state.hasWon);
 
   return (
     <div className="App" style={{ display: 'flex', width: '100vw', height: '100vh', overflow: 'hidden', position: 'relative' }}>
@@ -125,6 +128,9 @@ function App() {
           Hide in menu for clean look.
       */}
       {mode !== 'menu' && <Overlay />}
+
+      {/* Win Popup */}
+      {hasWon && mode !== 'menu' && <WinPopup onBackToHome={() => setMode('menu')} />}
 
     </div>
   )

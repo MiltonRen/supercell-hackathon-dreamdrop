@@ -49,6 +49,12 @@ interface GameState {
   // Chat
   messages: ChatMessage[];
   addMessage: (playerId: string, text: string) => void;
+
+  // Win Condition
+  hasWon: boolean;
+  winHeight: number;
+  setHasWon: (hasWon: boolean) => void;
+  resetGame: () => void;
 }
 
 export const useStore = create<GameState>((set) => ({
@@ -123,4 +129,14 @@ export const useStore = create<GameState>((set) => ({
   addMessage: (playerId, text) => set((state) => ({
     messages: [...state.messages, { id: uuidv4(), playerId, text, timestamp: Date.now() }]
   })),
+
+  hasWon: false,
+  winHeight: 12,
+  setHasWon: (hasWon) => set({ hasWon }),
+  resetGame: () => set({
+    hasWon: false,
+    messages: [],
+    worldDescription: "A miniature mushroom farm where cute mushmallow people run around and build cabins with wood blocks. Keep the background stable. Video game graphics in the Studio Ghibli animation style.",
+    isDreaming: false,
+  }),
 }));
