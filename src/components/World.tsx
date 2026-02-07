@@ -23,6 +23,7 @@ const GameObj = React.memo(({ obj }: { obj: GameObject }) => {
       position={position}
       colliders="cuboid"
       userData={{ id: obj.id, type: obj.type, scale: scale || [1, 1, 1] }}
+      lockRotations
     >
       <mesh castShadow receiveShadow position={[0, meshYOffset, 0]}>
         {Geometry}

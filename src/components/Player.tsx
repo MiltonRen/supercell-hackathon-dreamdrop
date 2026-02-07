@@ -88,6 +88,7 @@ const Player = React.memo(({ id, isControlled }: { id: string, isControlled: boo
   if (!player) return null;
 
   const rigidBodyRef = useRef<RapierRigidBody>(null);
+  const objects = useStore(state => state.objects);
   const updatePlayerPosition = useStore(state => state.updatePlayerPosition);
   const pickupObject = useStore(state => state.pickupObject);
   const dropObject = useStore(state => state.dropObject);
@@ -135,11 +136,16 @@ const Player = React.memo(({ id, isControlled }: { id: string, isControlled: boo
     if (player.heldObjectId) {
       // Drop with Stacking Logic
       let targetPos: [number, number, number] | null = null;
-      const SNAP_RADIUS = 2.0;
+      const SNAP_RADIUS = 2.5;
+      const DROP_GAP = 0.001;
 
-      // Find closest object to snap to
-      let closestObj: { id: string, pos: { x: number, y: number, z: number }, height: number } | null = null;
-      let minDistSq = SNAP_RADIUS * SNAP_RADIUS;
+      const heldObj = objects.find(o => o.id === player.heldObjectId);
+      const heldScale = heldObj?.scale || [1, 1, 1];
+      const heldHeight = heldScale[1] || 1;
+
+      // Find closest object in XZ plane within snap radius
+      let stackTarget: { x: number; z: number; topY: number } | null = null;
+      let closestDistSq = SNAP_RADIUS * SNAP_RADIUS;
 
       world.forEachRigidBody((body) => {
         if (body.handle === rigidBodyRef.current?.handle) return;
@@ -148,41 +154,23 @@ const Player = React.memo(({ id, isControlled }: { id: string, isControlled: boo
         if (!userData || !userData.id || userData.id === player.heldObjectId) return;
 
         const bPos = body.translation();
-        const dx = bPos.x - playerPos.x;
-        const dz = bPos.z - playerPos.z;
+        const scale = userData.scale || [1, 1, 1];
+        const dx = playerPos.x - bPos.x;
+        const dz = playerPos.z - bPos.z;
         const distSq = dx * dx + dz * dz;
+        if (distSq > closestDistSq) return;
 
-        if (distSq < minDistSq) {
-          minDistSq = distSq;
-          closestObj = {
-            id: userData.id,
-            pos: { x: bPos.x, y: bPos.y, z: bPos.z },
-            height: userData.scale ? userData.scale[1] : 1
-          };
-        }
+        const topY = bPos.y + (scale[1] || 1) / 2;
+        closestDistSq = distSq;
+        stackTarget = { x: bPos.x, z: bPos.z, topY };
       });
 
-      if (closestObj) {
-        const found = closestObj as { pos: { x: number, y: number, z: number }, height: number };
-        // Capture data into local constants to avoid TS narrowing issues in nested loops
-        const stackX = found.pos.x;
-        const stackZ = found.pos.z;
-        let highestY = found.pos.y + found.height / 2; // Position is at center, so add half height
-        const ALIGN_EPSILON = 0.5;
-
-        world.forEachRigidBody((body) => {
-          const u = body.userData as { id?: string, scale?: [number, number, number] };
-          if (!u || !u.id || u.id === player.heldObjectId) return;
-
-          const p = body.translation();
-          if (Math.abs(p.x - stackX) < ALIGN_EPSILON && Math.abs(p.z - stackZ) < ALIGN_EPSILON) {
-            const h = u.scale ? u.scale[1] : 1;
-            const top = p.y + h / 2; // Position is at center, so add half height
-            if (top > highestY) highestY = top;
-          }
-        });
-
-        targetPos = [stackX, highestY + 0.05, stackZ];
+      if (stackTarget) {
+        targetPos = [
+          stackTarget.x,
+          stackTarget.topY + heldHeight / 2 + DROP_GAP,
+          stackTarget.z
+        ];
       }
 
       const finalPos: [number, number, number] = targetPos || [
