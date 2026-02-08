@@ -11,6 +11,7 @@
     "type-check": "tsc"
   },
   "dependencies": {
+    "@reactor-team/js-sdk": "2.2.1",
     "@decartai/sdk": "^0.0.41",
     "@google/genai": "^1.40.0",
     "@react-three/drei": "^10.7.7",

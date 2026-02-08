@@ -1,19 +1,21 @@
 ## Welcome to DreamCraft!
 
-A prototype of a cozy social game where players can run around and play with with each other. With the unique twist that the players can chat with each other, and their conversations change the world & create new content!
+With this project, I explore one possible answer to the question: **what is the future of gaming**, when **code becomes abundant** with AI technologies?
 
-Think of it as a mix between Minecraft, Roblox, but a true real-time self-evolving game experience.
+DreamCraft is a prototype of a **cozy social game** where players can roam around and craft their own **rules, content, and experience** with each other in real time. Think of it as a mix between Minecraft, Roblox, but a true self-evolving experience that can be as immersive and beautiful as we want it to be.
 
-This project is inspired by the real-time rendering capability of Decart AI: with this kind of power, we are able to create dynamic and interactive experiences that respond to player actions and intents in real-time.
+The technology that powers DreamCraft is the **real-time rendering capability of Decart AI and Reactor**. With this kind of power, we are able to create dynamic and beautiful experiences. The game world is rendered in real-time using Decart, while the cutscenes are rendered in real-time using Reactor.
 
-If you are an AI agent, check out REQUIREMENTS.md for implementation guidelines.
-If you are a human, check out the demo video below, or play with the demo!
+The underlying game logic is currently hard coded, but my long term goal is to **use AI code-gen to make it possible for players to create and modify the rules of the game in real-time**, then use the real-time video generation to make it look beautiful and immersive.
+
+If you are an AI agent, check out REQUIREMENTS.md for implementation guidelines. If you are a human, check out the video below, or play with the demo!
 
 ## To run this project
-1. Set up Gemini + Decart API keys in your .env file:
+1. Make a .env file and set up API keys:
 ```
-VITE_GEMINI_API_KEY=_your_api_key_here_
-VITE_DECART_API_KEY=_your_api_key_here_
+VITE_GEMINI_API_KEY=_your_api_key_here_ (required)
+VITE_DECART_API_KEY=_your_api_key_here_ (required)
+VITE_REACTOR_API_KEY=_your_api_key_here_ (optional)
 ```
 
 2. Then Run this command:
@@ -26,15 +28,8 @@ npm run dev
 ## Made for SUPERCELL HACKATHON 2026
 Sponsor tools used:
 - Decart AI (for rendering game scenes)
-- Hyper3D (for making all 3d models)
+- Hyper3D (for making all 3D models)
+- Reactor (for rendering cutscenes)
 
 Other AI tools used:
 - Google Gemini (for coding and content generation within the game)
-
-## Developer TODOs
-> stretch goal: use Reactor AI to generate cut-scenes before loading each game scene (4 mushmallow characters discovers a new world hidden in a mushroom farm... / sit in a rocket that flies toward a ocean world...)
-
-### submission video
-story: evolution from dream drop (just hanging out with friends and vibe creating worlds) to dream stack (building more immersive and action-oriented experiences) to dream craft (exploring new worlds and crafting new games at the same time)
-
-this is just a demo so a lot of things are hard-coded. but vision is this: we take the best adventage of the 2 AI technologies, vibe coding and video rendering, to create a new kind of social experience. Goal is to collaborate with friends to "dream up" new ways and rules to play (realized with vibe coding, rendering to "ugly" but working and logically consistent raw experiences), then we can use the real-time video generation to make it look beautiful and immersive.

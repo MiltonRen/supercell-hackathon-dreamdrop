@@ -4,6 +4,7 @@ import { DecartStream } from './components/DecartStream'
 import { Overlay } from './components/Overlay'
 import { WinPopup } from './components/WinPopup'
 import { FlightScene } from './components/FlightScene'
+import { Cutscene } from './components/Cutscene'
 import { Bgm } from './components/Bgm'
 import { useGameLogic } from './logic/GameLogic'
 import { useStore } from './store'
@@ -85,7 +86,7 @@ function App() {
   useGameLogic();
 
   const [mode, setMode] = useState<'menu' | 'local' | 'decart'>('menu');
-  const [phase, setPhase] = useState<'build' | 'flight'>('build');
+  const [phase, setPhase] = useState<'cutscene' | 'build' | 'flight'>('build');
   const hasWon = useStore(state => state.hasWon);
   const resetRound = useStore(state => state.resetRound);
   const setWorldDescription = useStore(state => state.setWorldDescription);
@@ -105,7 +106,7 @@ function App() {
   };
 
   const handleStart = (nextMode: 'local' | 'decart') => {
-    setPhase('build');
+    setPhase('cutscene');
     setMode(nextMode);
   };
 
@@ -116,6 +117,10 @@ function App() {
   const handleLand = () => {
     setWorldDescription(createRandomWorldDescription());
     resetRound();
+    setPhase('cutscene');
+  };
+
+  const handleEnterWorld = () => {
     setPhase('build');
   };
 
@@ -142,6 +147,10 @@ function App() {
       */}
 
       {/* Full Screen Scene Container (Used in Local Mode) */}
+      {mode !== 'menu' && phase === 'cutscene' && (
+        <Cutscene mode={mode} onEnter={handleEnterWorld} />
+      )}
+
       {mode === 'local' && phase === 'build' && (
         <div style={{ flex: 1, position: 'relative' }}>
           <Scene />
