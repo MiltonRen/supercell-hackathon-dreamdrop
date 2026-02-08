@@ -90,7 +90,7 @@ function ReactorStage({
 export function Cutscene({ mode, onEnter }: CutsceneProps) {
   const worldDescription = useStore(state => state.worldDescription);
   const cutscenePrompt = useMemo(() => (
-    `${worldDescription} outside of this world, 4 round mushmallow characters arrives before a gate that leads to this world, and walks in`
+    `${worldDescription}. Render as a high quality Japanese anime, A tranquil scene in the unmistakable Studio Ghibli 2D anime style, featuring soft, hand-drawn textures, vibrant yet natural color palettes, and a gentle, dreamlike atmosphere. Emphasize intricate background details, expressive character design with subtle emotions, and a sense of wonder. The lighting should be diffused and evoke a specific time of day, perhaps golden hour or a soft, overcast afternoon. Focus on the beauty of nature, whether it's lush forests, serene waters, or charming, lived-in architecture.`
   ), [worldDescription]);
 
   const apiKey = import.meta.env.VITE_REACTOR_API_KEY as string | undefined;

@@ -66,7 +66,7 @@ interface GameState {
 }
 
 export const useStore = create<GameState>((set) => ({
-  worldDescription: "A mushroom world. Keep the background stable. Render high quality video game graphics in the Studio Ghibli animation art style.",
+  worldDescription: "A world of mystery and magic. Keep the background stable. Render high quality video game graphics in the Studio Ghibli style 2D Japanese animation, kawaii art style, flat colors, no shading, 2D.",
   setWorldDescription: (desc) => set({ worldDescription: desc }),
 
   players: {},
@@ -179,7 +179,7 @@ export const useStore = create<GameState>((set) => ({
   resetGame: () => set({
     hasWon: false,
     messages: [],
-    worldDescription: "Mushroom world. Keep the background stable. Video game graphics in the Studio Ghibli animation style.",
+    worldDescription: "Mushroom world. Keep the background stable. Video game graphics in the Studio Ghibli style 2D Japanese animation, kawaii art style, flat colors, no shading, 2D.",
     isDreaming: false,
   }),
 }));

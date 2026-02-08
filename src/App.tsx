@@ -102,7 +102,7 @@ function App() {
     ];
     const pick = (list: string[]) => list[Math.floor(Math.random() * list.length)];
     const setting = pick(settings);
-    return `A ${setting}. Keep the background stable. Render high quality video game graphics in the Studio Ghibli animation art style.`;
+    return `A ${setting}. Keep the background stable. Render high quality video game graphics in the Studio Ghibli style 2D Japanese animation, kawaii art style, flat colors, no shading, 2D.`;
   };
 
   const handleStart = (nextMode: 'local' | 'decart') => {
