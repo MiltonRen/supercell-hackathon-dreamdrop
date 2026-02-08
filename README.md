@@ -8,6 +8,8 @@ DreamCraft is a prototype of a **cozy social game** where players can roam aroun
 
 ![DreamCraft](./public/screenshot.png)
 
+[Watch Demo Video on Youtube](https://youtu.be/pyYNcsEhAME)
+
 The technology that powers DreamCraft is the **real-time rendering capability of Decart AI and Reactor**. With this kind of power, we are able to create dynamic and beautiful experiences. The game world is rendered in real-time using Decart, while the cutscenes are rendered in real-time using Reactor.
 
 ![DreamCraft](./public/illustration_a.jpeg)
