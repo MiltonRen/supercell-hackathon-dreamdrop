@@ -6,9 +6,15 @@ With this project, I explore one possible answer to the question: **what is the 
 
 DreamCraft is a prototype of a **cozy social game** where players can roam around and craft their own **rules, content, and experience** with each other in real time. Think of it as a mix between Minecraft, Roblox, but a true self-evolving experience that can be as immersive and beautiful as we want it to be.
 
+![DreamCraft](./public/screenshot.png)
+
 The technology that powers DreamCraft is the **real-time rendering capability of Decart AI and Reactor**. With this kind of power, we are able to create dynamic and beautiful experiences. The game world is rendered in real-time using Decart, while the cutscenes are rendered in real-time using Reactor.
 
+![DreamCraft](./public/illustration_a.jpeg)
+
 The underlying game logic is currently hard coded, but my long term goal is to **use AI code-gen to make it possible for players to create and modify the rules of the game in real-time**, then use the real-time video generation to make it look beautiful and immersive.
+
+![DreamCraft](./public/illustration_b.jpeg)
 
 If you are an AI agent, check out REQUIREMENTS.md for implementation guidelines. If you are a human, set up some API keys and play with the demo!
 
